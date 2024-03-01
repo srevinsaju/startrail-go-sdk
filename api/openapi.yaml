@@ -1,0 +1,848 @@
+openapi: 3.0.3
+info:
+  description: ""
+  license:
+    name: ""
+  title: startrail-service
+  version: 0.1.0
+servers:
+- url: /
+tags:
+- description: Startrail API
+  name: startrail
+paths:
+  /:
+    get:
+      operationId: get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HelloWorldResponse'
+          description: "Hello, World!"
+      tags:
+      - hello
+  /.well-known/startrail/auth:
+    get:
+      operationId: well_known_auth
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WellKnownAuth'
+          description: Returns the .well-known authentication details to configure
+            web clients and command line tools.
+      tags:
+      - hello
+  /api/v1/keys:
+    post:
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKey'
+        description: ""
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyResponse'
+          description: Creates a new service
+      security:
+      - bearer_auth: []
+      tags:
+      - api_keys
+  /api/v1/keys/{id}:
+    delete:
+      operationId: delete
+      parameters:
+      - description: ID of the API key.
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringResponse'
+          description: Deletes a particular API Key
+      security:
+      - bearer_auth: []
+      tags:
+      - api_keys
+  /api/v1/service:
+    post:
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Service'
+        description: ""
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceResponse'
+          description: Creates a new service
+      security:
+      - bearer_auth: []
+      tags:
+      - service
+  /api/v1/service/{tenant}:
+    get:
+      operationId: list
+      parameters:
+      - description: Name of the tenant.
+        explode: false
+        in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceListResponse'
+          description: Lists all services
+      security:
+      - bearer_auth: []
+      tags:
+      - service
+  /api/v1/service/{tenant}/{environment}/{name}:
+    delete:
+      operationId: delete
+      parameters:
+      - description: Name of the tenant.
+        explode: false
+        in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Name of the environment.
+        explode: false
+        in: path
+        name: environment
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Name of the service.
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringResponse'
+          description: Deletes a particular service
+      security:
+      - bearer_auth: []
+      tags:
+      - service
+    get:
+      operationId: get
+      parameters:
+      - description: Name of the tenant.
+        explode: false
+        in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Name of the environment.
+        explode: false
+        in: path
+        name: environment
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Name of the service.
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceResponse'
+          description: Gets the details of a particular service
+      security:
+      - bearer_auth: []
+      tags:
+      - service
+  /api/v1/service/{tenant}/{environment}/{name}/activity:
+    get:
+      operationId: activity
+      parameters:
+      - description: Name of the tenant.
+        explode: false
+        in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Name of the environment.
+        explode: false
+        in: path
+        name: environment
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Name of the service.
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceActivityResponse'
+          description: Gets the activity graph of a particular service
+      security:
+      - bearer_auth: []
+      tags:
+      - service
+  /api/v1/service/{tenant}/{environment}/{name}/history:
+    get:
+      operationId: history
+      parameters:
+      - description: Name of the tenant.
+        explode: false
+        in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Name of the environment.
+        explode: false
+        in: path
+        name: environment
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Name of the service.
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceListResponse'
+          description: Lists the history of a particular service
+      security:
+      - bearer_auth: []
+      tags:
+      - service
+  /health:
+    get:
+      operationId: get
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Startrail is healthy
+      tags:
+      - health
+components:
+  schemas:
+    Access:
+      example:
+        endpoint: endpoint
+        internal: true
+        auth: true
+      properties:
+        auth:
+          type: boolean
+        endpoint:
+          type: string
+        internal:
+          type: boolean
+      required:
+      - auth
+      - endpoint
+      - internal
+      type: object
+    ApiKey:
+      example:
+        expires_at: 2021-01-01
+        user_id: user_id
+        created_at: 2000-01-23T04:56:07.000+00:00
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        label: label
+        key: key
+      properties:
+        created_at:
+          format: date-time
+          nullable: true
+          type: string
+        expires_at:
+          example: 2021-01-01
+          format: date
+          nullable: true
+          type: string
+        id:
+          format: uuid
+          nullable: true
+          type: string
+        key:
+          nullable: true
+          type: string
+        label:
+          nullable: true
+          type: string
+        user_id:
+          nullable: true
+          type: string
+      type: object
+    ApiKeyListResponse:
+      properties:
+        diagnostics:
+          items:
+            $ref: '#/components/schemas/Diagnostic'
+          type: array
+        response:
+          items:
+            $ref: '#/components/schemas/ApiKey'
+          nullable: true
+          type: array
+        success:
+          type: boolean
+      required:
+      - diagnostics
+      - success
+      type: object
+    ApiKeyResponse:
+      example:
+        diagnostics:
+        - severity: null
+          summary: summary
+          context: context
+          detail: detail
+        - severity: null
+          summary: summary
+          context: context
+          detail: detail
+        response: ""
+        success: true
+      properties:
+        diagnostics:
+          items:
+            $ref: '#/components/schemas/Diagnostic'
+          type: array
+        response:
+          allOf:
+          - $ref: '#/components/schemas/ApiKey'
+          nullable: true
+        success:
+          type: boolean
+      required:
+      - diagnostics
+      - success
+      type: object
+    DiagSeverity:
+      enum:
+      - Info
+      - Warning
+      - Error
+      type: string
+    Diagnostic:
+      example:
+        severity: null
+        summary: summary
+        context: context
+        detail: detail
+      properties:
+        context:
+          type: string
+        detail:
+          type: string
+        severity:
+          $ref: '#/components/schemas/DiagSeverity'
+        summary:
+          type: string
+      required:
+      - context
+      - detail
+      - severity
+      - summary
+      type: object
+    ErrorResponse:
+      properties:
+        diagnostics:
+          items:
+            $ref: '#/components/schemas/Diagnostic'
+          type: array
+        success:
+          type: boolean
+      required:
+      - diagnostics
+      - success
+      type: object
+    HelloWorld:
+      properties:
+        tagline:
+          type: string
+        version:
+          $ref: '#/components/schemas/Version'
+      required:
+      - tagline
+      - version
+      type: object
+    HelloWorldResponse:
+      example:
+        diagnostics:
+        - severity: null
+          summary: summary
+          context: context
+          detail: detail
+        - severity: null
+          summary: summary
+          context: context
+          detail: detail
+        response: ""
+        success: true
+      properties:
+        diagnostics:
+          items:
+            $ref: '#/components/schemas/Diagnostic'
+          type: array
+        response:
+          allOf:
+          - $ref: '#/components/schemas/HelloWorld'
+          nullable: true
+        success:
+          type: boolean
+      required:
+      - diagnostics
+      - success
+      type: object
+    Logging:
+      example:
+        labels:
+          key: labels
+      properties:
+        labels:
+          additionalProperties:
+            type: string
+          type: object
+      required:
+      - labels
+      type: object
+    Metadata:
+      properties:
+        labels:
+          additionalProperties:
+            type: string
+          type: object
+      required:
+      - labels
+      type: object
+    Service:
+      example:
+        metadata: ""
+        access:
+        - endpoint: endpoint
+          internal: true
+          auth: true
+        - endpoint: endpoint
+          internal: true
+          auth: true
+        sources:
+          key:
+            labels:
+              key: labels
+        description: This is a hello world service.
+        environment: production
+        updated_at: 0
+        name: hello-world
+        updated_by: updated_by
+        logging:
+          key:
+            labels:
+              key: labels
+        disabled: true
+        updated_date: 2021-01-01
+        remarks: Make sure this service prints hello world on /
+        tenant: startrail
+      properties:
+        access:
+          items:
+            $ref: '#/components/schemas/Access'
+          type: array
+        description:
+          example: This is a hello world service.
+          type: string
+        disabled:
+          type: boolean
+        environment:
+          example: production
+          type: string
+        logging:
+          additionalProperties:
+            $ref: '#/components/schemas/Logging'
+          nullable: true
+          type: object
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/Metadata'
+          nullable: true
+        name:
+          example: hello-world
+          type: string
+        remarks:
+          example: Make sure this service prints hello world on /
+          type: string
+        sources:
+          additionalProperties:
+            $ref: '#/components/schemas/Source'
+          nullable: true
+          type: object
+        tenant:
+          example: startrail
+          type: string
+        updated_at:
+          format: int64
+          nullable: true
+          type: integer
+        updated_by:
+          nullable: true
+          type: string
+        updated_date:
+          example: 2021-01-01
+          format: date
+          nullable: true
+          type: string
+      required:
+      - description
+      - environment
+      - name
+      - remarks
+      - tenant
+      type: object
+    ServiceActivity:
+      properties:
+        date:
+          example: 2021-01-01
+          format: date
+          nullable: true
+          type: string
+        value:
+          format: int64
+          type: integer
+      type: object
+    ServiceActivityResponse:
+      example:
+        diagnostics:
+        - severity: null
+          summary: summary
+          context: context
+          detail: detail
+        - severity: null
+          summary: summary
+          context: context
+          detail: detail
+        response: ""
+        success: true
+      properties:
+        diagnostics:
+          items:
+            $ref: '#/components/schemas/Diagnostic'
+          type: array
+        response:
+          allOf:
+          - $ref: '#/components/schemas/ServiceActivity'
+          nullable: true
+        success:
+          type: boolean
+      required:
+      - diagnostics
+      - success
+      type: object
+    ServiceListResponse:
+      example:
+        diagnostics:
+        - severity: null
+          summary: summary
+          context: context
+          detail: detail
+        - severity: null
+          summary: summary
+          context: context
+          detail: detail
+        response:
+        - metadata: ""
+          access:
+          - endpoint: endpoint
+            internal: true
+            auth: true
+          - endpoint: endpoint
+            internal: true
+            auth: true
+          sources:
+            key:
+              labels:
+                key: labels
+          description: This is a hello world service.
+          environment: production
+          updated_at: 0
+          name: hello-world
+          updated_by: updated_by
+          logging:
+            key:
+              labels:
+                key: labels
+          disabled: true
+          updated_date: 2021-01-01
+          remarks: Make sure this service prints hello world on /
+          tenant: startrail
+        - metadata: ""
+          access:
+          - endpoint: endpoint
+            internal: true
+            auth: true
+          - endpoint: endpoint
+            internal: true
+            auth: true
+          sources:
+            key:
+              labels:
+                key: labels
+          description: This is a hello world service.
+          environment: production
+          updated_at: 0
+          name: hello-world
+          updated_by: updated_by
+          logging:
+            key:
+              labels:
+                key: labels
+          disabled: true
+          updated_date: 2021-01-01
+          remarks: Make sure this service prints hello world on /
+          tenant: startrail
+        success: true
+      properties:
+        diagnostics:
+          items:
+            $ref: '#/components/schemas/Diagnostic'
+          type: array
+        response:
+          items:
+            $ref: '#/components/schemas/Service'
+          nullable: true
+          type: array
+        success:
+          type: boolean
+      required:
+      - diagnostics
+      - success
+      type: object
+    ServiceResponse:
+      example:
+        diagnostics:
+        - severity: null
+          summary: summary
+          context: context
+          detail: detail
+        - severity: null
+          summary: summary
+          context: context
+          detail: detail
+        response: ""
+        success: true
+      properties:
+        diagnostics:
+          items:
+            $ref: '#/components/schemas/Diagnostic'
+          type: array
+        response:
+          allOf:
+          - $ref: '#/components/schemas/Service'
+          nullable: true
+        success:
+          type: boolean
+      required:
+      - diagnostics
+      - success
+      type: object
+    Source:
+      example:
+        labels:
+          key: labels
+      properties:
+        labels:
+          additionalProperties:
+            type: string
+          type: object
+      required:
+      - labels
+      type: object
+    StringResponse:
+      example:
+        diagnostics:
+        - severity: null
+          summary: summary
+          context: context
+          detail: detail
+        - severity: null
+          summary: summary
+          context: context
+          detail: detail
+        response: response
+        success: true
+      properties:
+        diagnostics:
+          items:
+            $ref: '#/components/schemas/Diagnostic'
+          type: array
+        response:
+          nullable: true
+          type: string
+        success:
+          type: boolean
+      required:
+      - diagnostics
+      - success
+      type: object
+    Version:
+      properties:
+        number:
+          type: string
+      required:
+      - number
+      type: object
+    WellKnownAuth:
+      example:
+        audience: audience
+        scopes:
+        - scopes
+        - scopes
+        device:
+          audience: audience
+          authorization_url: authorization_url
+          device_code_url: device_code_url
+          scopes:
+          - scopes
+          - scopes
+          token_url: token_url
+          client_id: client_id
+          enabled: true
+        client_id: client_id
+        enabled: true
+        issuer: issuer
+        jwks_url: jwks_url
+      properties:
+        audience:
+          nullable: true
+          type: string
+        client_id:
+          type: string
+        device:
+          $ref: '#/components/schemas/WellKnownDeviceAuth'
+        enabled:
+          type: boolean
+        issuer:
+          type: string
+        jwks_url:
+          type: string
+        scopes:
+          items:
+            type: string
+          nullable: true
+          type: array
+      required:
+      - client_id
+      - device
+      - issuer
+      - jwks_url
+      type: object
+    WellKnownDeviceAuth:
+      example:
+        audience: audience
+        authorization_url: authorization_url
+        device_code_url: device_code_url
+        scopes:
+        - scopes
+        - scopes
+        token_url: token_url
+        client_id: client_id
+        enabled: true
+      properties:
+        audience:
+          nullable: true
+          type: string
+        authorization_url:
+          type: string
+        client_id:
+          type: string
+        device_code_url:
+          type: string
+        enabled:
+          type: boolean
+        scopes:
+          items:
+            type: string
+          nullable: true
+          type: array
+        token_url:
+          nullable: true
+          type: string
+      required:
+      - authorization_url
+      - client_id
+      - device_code_url
+      - enabled
+      type: object
+  securitySchemes:
+    bearer_auth:
+      scheme: bearer
+      type: http
